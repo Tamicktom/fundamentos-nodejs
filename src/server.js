@@ -19,11 +19,11 @@ const server = http.createServer((req, res) => {
     });
 
     return res
-      .setHeader('Content-Type', 'application/json')
+      .writeHead(201)
       .end('Criar usuário');
   }
 
-  return res.end('Hello World!');
+  return res.writeHead(404).end('Not found');
 });
 
 server.listen(3000);
