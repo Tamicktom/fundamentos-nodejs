@@ -21,7 +21,7 @@ class InverseNumberStream extends Transform {
   _transform(chunk, encoding, callback) {
     const transformed = Number(chunk.toString()) * -1;
 
-    callback(null, transformed.toString());
+    callback(null, Buffer.from(`${transformed}\n`, 'utf-8'));
   }
 }
 
