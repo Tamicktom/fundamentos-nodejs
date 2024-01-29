@@ -1,9 +1,26 @@
 import http from 'node:http';
 
+const PORT = 3333;
+
 const users = [];
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const { method, url } = req;
+
+  const buffers = [];
+
+  for await (const chunk of req) {
+    buffers.push(chunk);
+  }
+
+  
+  try {
+    req.body = JSON.parse(Buffer.concat(buffers).toString());
+  } catch (error) {
+    req.body = null;
+  }
+
+  console.log(req.body);
 
   if (method === 'GET' && url === '/users') {
     return res
@@ -12,10 +29,12 @@ const server = http.createServer((req, res) => {
   }
 
   if (method === 'POST' && url === '/users') {
+    const { name, email } = req.body;
+
     users.push({
       id: 1,
-      name: 'Rafael',
-      email: 'rafael@exemplo.com'
+      name,
+      email,
     });
 
     return res
@@ -26,4 +45,6 @@ const server = http.createServer((req, res) => {
   return res.writeHead(404).end('Not found');
 });
 
-server.listen(3000);
+server.listen(PORT, () =>
+  console.log(`Server listening on port ${PORT}`)
+);
